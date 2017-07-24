@@ -21,7 +21,9 @@ This application retrieves API data given a series of queries from an input file
 ---
 
 ### Input file syntax
-* An input file should use the following syntax:
+
+An input file should use the following syntax:
+
  * {source}
  * {query1}
  * {query2}
