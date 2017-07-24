@@ -1,11 +1,12 @@
 import json
 import csv
+from bs4 import BeautifulSoup as bs
 
 # Filetype: csv
 def parse(data, file):
     # Append file ext.
     fname = file
-    ofile = open(fname, 'w')
+    ofile = open(fname, 'a')
     csv_file = csv.writer(ofile)
     # Header
     csv_file.writerow(["lat", "lng", "lodgeunitid", "html"])
