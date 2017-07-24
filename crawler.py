@@ -1,31 +1,14 @@
 import requests
-import asyncio
+import importlib
 import copy
-from urllib.parse import urlsplit, urlunsplit, urlencode, parse_qs
 from time import sleep
+from urllib.parse import urlsplit, urlunsplit, urlencode, parse_qs
 
-inputURL = './data/in/input.txt'
-RQDELAY = 2
-
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-# Returns the base query URL for the given source
-def getQueryURL(source):
-    if source == 'xiaozhu':
-        return 'http://www.xiaozhu.com/ajax.php?op=Ajax_GetDatas4Map&partner=&startDate=&endDate=&city=&putkey=&district=&landmark=&housetyperoomcnt=&facilities=&leasetype=&guestnum=&lowprice=&highprice=&pageno=&sort=&_='
-    else: # Assume source given is already base query URL
-        return source
+from package.config import *
+from package.info import bcolors, getapiURL, getparser
 
 # Parses the infile and returns a list of requests to try
-def getRequestURLs(queryURL, infile):
+def getrequestURLs(queryURL, infile):
     urlparts = urlsplit(queryURL)
     defaultKeys = parse_qs(urlparts.query, True)
 
@@ -57,12 +40,13 @@ def getRequestURLs(queryURL, infile):
 
     return reqs
 
-def makeRequests(reqs):
+def makeRequests(reqs, parser):
     count = 0
     total = len(reqs)
     for req in reqs:
         count += 1
         sleep(RQDELAY)
+
         # Get request
         try:
             print(bcolors.HEADER, "[", count, "of", total, "]", req[0], bcolors.ENDC, end="...", flush=True)
@@ -74,11 +58,12 @@ def makeRequests(reqs):
             print(bcolors.FAIL, "FAIL:", inst, bcolors.ENDC)
             # Could not resolve request, move onto the next one
             continue
+
         # Parse JSON data
         try:
             data = result.json()
+            parser.parse(data, OUTPUTFILE)
             print(bcolors.OKGREEN, "SUCCESS", bcolors.ENDC)
-            # Call some func to parse data
         except Exception as inst:
             print(bcolors.FAIL, "FAIL: No data found", bcolors.ENDC)
             # Could not parse data, do nothing
@@ -87,18 +72,19 @@ def makeRequests(reqs):
 def main():
     # Open input file
     try:
-        infile = open(inputURL, 'r')
+        infile = open(INPUTFILE, 'r')
     except Exception as inst:
         print(bcolors.FAIL, inst, bcolors.ENDC)
         return
 
     # Parse input file
     source = infile.readline().replace('\n','')
-    queryURL = getQueryURL(source)
-    reqs = getRequestURLs(queryURL, infile)
+    apiURL = getapiURL(source)
+    reqs = getrequestURLs(apiURL, infile)
     
-    # Fetch data from source and parse to file
-    makeRequests(reqs)
+    # Fetch data from source, get the proper parser, and write to file
+    parser = importlib.import_module(getparser(source))
+    makeRequests(reqs, parser)
 
 if __name__ == "__main__":
     main()
