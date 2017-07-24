@@ -24,14 +24,14 @@ This application retrieves API data given a series of queries from an input file
 
 An input file should use the following syntax:
 
- * {source}
- * {query1}
- * {query2}
- * {query...}
+ * line1: {source}
+ * line2: {query1}
+ * line3: {query2}
+ * linen: {queryn}
 
-* {source} should be either API URL, or a known source found in /package/info.py
+{source} should be either API URL, or a known source found in /package/info.py
 
-* {query} syntax is as follows:
+{query} syntax is as follows:
  * {arg1}={value},{arg2}={value},{arg...}={value}
  * Whitespace is considered a part of the query
  * Unspecified arguments will be considered empty
