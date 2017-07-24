@@ -1,7 +1,7 @@
 import json
 import os
 
-# Saves requests as JSON
+# Saves requests as a JSON
 def parse(data, fname):
     a = list()
     if not os.path.isfile(fname):

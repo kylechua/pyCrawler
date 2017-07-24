@@ -1,15 +1,15 @@
 import json
-import os
+import csv
 
-def parse(data, fname):
-    a = list()
-    if not os.path.isfile(fname):
-        a.append(data)
-        with open(fname, 'w') as ofile:
-            ofile.write(json.dumps(a, indent=2))
-    else:
-        with open(fname) as feedsjson:
-            feeds = json.load(feedsjson)
-        feeds.append(data)
-        with open(fname, 'w') as ofile:
-            ofile.write(json.dumps(feeds, indent=2))
+# Filetype: csv
+def parse(data, file):
+    # Append file ext.
+    fname = file
+    ofile = open(fname, 'w')
+    csv_file = csv.writer(ofile)
+    # Header
+    csv_file.writerow(["lat", "lng", "lodgeunitid", "html"])
+    for entry in data:
+        csv_file.writerow([entry["lat"], entry["lng"], entry["lodgeunitid"], entry["html"]])
+    ofile.close()
+    return fname

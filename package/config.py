@@ -1,3 +1,3 @@
-RQDELAY = 2
-INPUTFILE = './data/in/input.txt'
-OUTPUTFILE = './data/out/output.json'
+REQUESTDELAY = 2
+INPUTDIR = './data/in/'
+OUTPUTDIR = './data/out/'

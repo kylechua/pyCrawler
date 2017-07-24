@@ -1,7 +1,7 @@
 
 # Database of API URLs, parser names
 class db:
-    # 'name':'defaultAPIurl'
+    # 'name':'url'
     api = {
         'xiaozhu':'http://www.xiaozhu.com/ajax.php?op=Ajax_GetDatas4Map&partner=&startDate=&endDate=&city=&putkey=&district=&landmark=&housetyperoomcnt=&facilities=&leasetype=&guestnum=&lowprice=&highprice=&pageno=&sort=&_='
     }
@@ -11,9 +11,7 @@ class db:
         'xiaozhu':'package.parser_xiaozhu'
     }
 
-###
-###
-###
+####
 
 def getapiURL(source):
     if source in db.api:

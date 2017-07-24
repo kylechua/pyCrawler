@@ -40,12 +40,12 @@ def getrequestURLs(queryURL, infile):
 
     return reqs
 
-def makeRequests(reqs, parser):
+def makeRequests(reqs, parser, ofile):
     count = 0
     total = len(reqs)
     for req in reqs:
         count += 1
-        sleep(RQDELAY)
+        sleep(REQUESTDELAY)
 
         # Get request
         try:
@@ -58,24 +58,28 @@ def makeRequests(reqs, parser):
             print(bcolors.FAIL, "FAIL:", inst, bcolors.ENDC)
             # Could not resolve request, move onto the next one
             continue
-
         # Parse JSON data
         try:
             data = result.json()
-            parser.parse(data, OUTPUTFILE)
-            print(bcolors.OKGREEN, "SUCCESS", bcolors.ENDC)
+            loc = parser.parse(data, ofile)
+            print(bcolors.OKGREEN, "SUCCESS: Parsed to ", bcolors.ENDC, bcolors.OKBLUE, loc, bcolors.ENDC)
         except Exception as inst:
-            print(bcolors.FAIL, "FAIL: No data found", bcolors.ENDC)
-            # Could not parse data, do nothing
+            print(bcolors.FAIL, "FAIL: Error parsing data", bcolors.ENDC)
             pass
 
 def main():
+    filename = input("Input: ")
+    INPUTFILE = INPUTDIR + filename
     # Open input file
     try:
         infile = open(INPUTFILE, 'r')
+        print(bcolors.OKGREEN, INPUTFILE, " found.", bcolors.ENDC)
     except Exception as inst:
         print(bcolors.FAIL, inst, bcolors.ENDC)
         return
+
+    filename = input("Output: ")
+    OUTPUTFILE = OUTPUTDIR + filename
 
     # Parse input file
     source = infile.readline().replace('\n','')
@@ -84,8 +88,7 @@ def main():
     
     # Fetch data from source, get the proper parser, and write to file
     parser = importlib.import_module(getparser(source))
-    makeRequests(reqs, parser)
+    makeRequests(reqs, parser, OUTPUTFILE)
 
 if __name__ == "__main__":
     main()
-#print(url[1].split('.')[1])
